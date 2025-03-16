@@ -61,8 +61,8 @@ if st.button("Update Plot"):
     ax.plot(x_vals * 1e3, y_vals * 1e3, label="Trajectory")  # Convert to mm for readability
     
     # Add E and B field indicators in a small corner area
-    ax.quiver(-8, 8, 1, 0, angles='xy', scale_units='xy', scale=3, color='r', label='E Field (+x)')
-    ax.text(-8, 7, r'$\odot$', fontsize=14, color='b', ha='center', va='center')  # B field out of screen
+    ax.quiver(0, 8, 1, 0, angles='xy', scale_units='xy', scale=3, color='r', label='E Field (+x)')
+    ax.text(0, 7, r'$\odot$', fontsize=14, color='b', ha='center', va='center')  # B field out of screen
     
     ax.set_xlabel("x position (mm)")
     ax.set_ylabel("y position (mm)")
