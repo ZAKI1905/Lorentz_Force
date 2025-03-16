@@ -30,8 +30,9 @@ trajectory = [position[:2].copy()]
 time_array = [0.0]
 
 def lorentz_force(q, v, E, B):
-    """Computes the relativistic Lorentz force."""
-    return q * (E + np.cross(v, np.array([0, 0, B])))
+    """Computes the relativistic Lorentz force, ensuring 3D vectors."""
+    v_3d = np.array([v[0], v[1], 0.0])  # Ensure it's a 3D vector
+    return q * (E + np.cross(v_3d, np.array([0, 0, B])))
 
 def gamma_factor(v):
     """Computes the relativistic Lorentz factor."""
