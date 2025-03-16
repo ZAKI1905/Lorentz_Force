@@ -30,7 +30,7 @@ velocity = st.number_input("Initial Velocity (m/s)", value=1e5)
 angle = st.number_input("Angle of Velocity (degrees)", value=0.0)
 
 # Logarithmic slider for simulation time
-log_time = st.slider("Simulation Duration (ns to ms)", -9, -3, -6)
+log_time = st.slider("Simulation Duration (mus to s)", -6, 0, -3)
 time_max = 10 ** log_time  # Convert log scale to actual time in seconds
 
 # Convert angle to radians
