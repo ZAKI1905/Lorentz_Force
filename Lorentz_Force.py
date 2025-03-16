@@ -69,6 +69,7 @@ if st.button("Update Plot"):
     
     ax.set_xlabel("x position (mm)")
     ax.set_ylabel("y position (mm)")
+    ax.xlim(0, 20)
     ax.set_title("Charged Particle Motion")
     ax.legend()
     st.pyplot(fig)
