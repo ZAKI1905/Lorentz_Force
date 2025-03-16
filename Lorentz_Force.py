@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Constants
-dt = 1e-9  # Reduced time step for numerical stability
+dt = 1e-10  # Smaller time step to improve stability
 num_steps = 5000  # Number of simulation steps
+c = 3e8  # Speed of light in m/s
 
 # Streamlit UI
 st.title("Charged Particle Motion in Electric and Magnetic Fields")
@@ -17,8 +18,8 @@ Adjust the parameters and observe the trajectory!
 # Sliders for user input
 charge = st.slider("Charge (C, x10⁻¹⁶)", -10.0, 10.0, -4.8) * 1e-16
 mass = st.slider("Mass (kg, x10⁻²⁵)", 1.0, 10.0, 7.5) * 1e-25
-velocity_x = st.slider("Initial Velocity in x (m/s, x10⁶)", -20.0, 20.0, 10.0) * 1e6
-velocity_y = st.slider("Initial Velocity in y (m/s, x10⁶)", -20.0, 20.0, 0.0) * 1e6
+velocity_x = st.slider("Initial Velocity in x (m/s, x10⁶)", -50.0, 50.0, 10.0) * 1e6
+velocity_y = st.slider("Initial Velocity in y (m/s, x10⁶)", -50.0, 50.0, 0.0) * 1e6
 B_field = st.slider("Magnetic Field Strength (T)", -5.0, 5.0, -2.9)
 E_field = st.slider("Electric Field Strength (V/m, x10⁵)", -10.0, 10.0, 0.0) * 1e5
 
@@ -29,13 +30,21 @@ trajectory = [position[:2].copy()]
 time_array = [0.0]
 
 def lorentz_force(q, v, E, B):
-    """Computes the Lorentz force."""
+    """Computes the relativistic Lorentz force."""
     return q * (E + np.cross(v, np.array([0, 0, B])))
 
-# Improved numerical integration (Runge-Kutta 4th Order)
+def gamma_factor(v):
+    """Computes the relativistic Lorentz factor."""
+    speed = np.linalg.norm(v)
+    return 1 / np.sqrt(1 - (speed**2 / c**2)) if speed < c else 1e6  # Prevent infinity
+
+# Relativistic Runge-Kutta 4th Order Method
 def rk4_step(q, m, v, r, E, B, dt):
     def acceleration(v):
-        return lorentz_force(q, v, E, B) / m
+        gamma = gamma_factor(v)
+        F = lorentz_force(q, v, E, B)
+        v_dot_F = np.dot(v, F)
+        return (F - (gamma**2 / c**2) * v_dot_F * v) / (gamma * m)
     
     k1_v = dt * acceleration(v)
     k1_r = dt * v
@@ -67,7 +76,7 @@ fig, ax = plt.subplots(figsize=(6, 6))
 ax.plot(trajectory[:, 0] * 1000, trajectory[:, 1] * 1000, 'b-', label="Trajectory")
 ax.set_xlabel("x position (mm)")
 ax.set_ylabel("y position (mm)")
-ax.set_title("Charged Particle Motion")
+ax.set_title("Charged Particle Motion (Relativistic)")
 ax.legend()
 st.pyplot(fig)
 
