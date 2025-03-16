@@ -28,7 +28,9 @@ E_field = st.number_input("Electric Field Strength (V/m)", value=0.0)
 B_field = st.number_input("Magnetic Field Strength (T)", value=0.1)
 velocity = st.number_input("Initial Velocity (m/s)", value=1e5)
 angle = st.number_input("Angle of Velocity (degrees)", value=0.0)
-time_max = st.number_input("Simulation Duration (s)", value=1e-6)
+
+# Logarithmic slider for simulation time (nano to milliseconds)
+time_max = st.slider("Simulation Duration", min_value=1e-9, max_value=1e-3, value=1e-6, format="%.0e")
 
 # Convert angle to radians
 theta = np.radians(angle)
@@ -42,9 +44,9 @@ if st.button("Update Plot"):
     fig, ax = plt.subplots()
     ax.plot(x_vals * 1e3, y_vals * 1e3, label="Trajectory")  # Convert to mm for readability
     
-    # Show field directions
-    ax.quiver(0, 0, 1, 0, angles='xy', scale_units='xy', scale=5, color='r', label='E Field (x-direction)')
-    ax.quiver(0, 0, 0, 1, angles='xy', scale_units='xy', scale=5, color='b', label='B Field (out of screen)')
+    # Add E and B field indicators in a small corner area
+    ax.quiver(-8, 8, 1, 0, angles='xy', scale_units='xy', scale=3, color='r', label='E Field (+x)')
+    ax.text(-8, 7, r'$\odot$', fontsize=14, color='b', ha='center', va='center')  # B field out of screen
     
     ax.set_xlabel("x position (mm)")
     ax.set_ylabel("y position (mm)")
