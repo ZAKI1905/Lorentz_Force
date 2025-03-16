@@ -75,8 +75,7 @@ def rk4_step(q, m, v, r, E, B, dt):
 E = np.array([E_field, 0, 0])  # Convert E to a 3D vector
 B = np.array([0, 0, B_field])  # Ensure B is also a 3D vector
 
-# Prepare the download button before the animation to ensure visibility
-st.write("## Download Simulation Data")
+# Placeholder for Data Download Button
 data_placeholder = st.empty()
 
 # Animation
@@ -103,11 +102,16 @@ for step in range(num_steps):
         time.sleep(animation_speed / 1000.0)
 
 # Ensure data arrays are of equal length
+data_length = min(len(time_array), len(trajectory))
+time_array = time_array[:data_length]
+trajectory = trajectory[:data_length]
 data = pd.DataFrame({
-    "Time (s)": time_array[:len(trajectory)],
-    "X Position (m)": np.array(trajectory)[:len(time_array), 0],
-    "Y Position (m)": np.array(trajectory)[:len(time_array), 1]
+    "Time (s)": time_array,
+    "X Position (m)": np.array(trajectory)[:, 0],
+    "Y Position (m)": np.array(trajectory)[:, 1]
 })
 
-# Display the download button in the placeholder so it's always visible
-data_placeholder.download_button("Download Data", data.to_csv(index=False), "particle_motion.csv", "text/csv")
+# Display the download button in the placeholder so it's always functional
+data_placeholder.download_button(
+    "Download Data", data.to_csv(index=False), "particle_motion.csv", "text/csv"
+)
