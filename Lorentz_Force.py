@@ -5,15 +5,16 @@ import pandas as pd
 import time
 
 # Constants
-dt = 1e-10  # Smaller time step to improve stability
-num_steps = 5000  # Number of simulation steps
+dt = 1e-10  # Initial small time step
+num_steps = 5000  # Max steps to simulate
 c = 3e8  # Speed of light in m/s
+max_time = 10  # Maximum simulation time in seconds
+boundary = 0.01  # Boundary limit in meters (10 mm screen size)
 
 # Streamlit UI
 st.title("Charged Particle Motion in Electric and Magnetic Fields")
 st.write(r"""
 This simulation visualizes the motion of a charged particle under the influence of an electric field \(E\) and a magnetic field \(B\) perpendicular to the plane.
-Adjust the parameters and observe the trajectory!
 """)
 
 # Sliders for user input
@@ -32,27 +33,21 @@ trajectory = []
 time_array = []
 
 def lorentz_force(q, v, E, B):
-    """Computes the relativistic Lorentz force with correct vector shapes."""
-    v = np.array([v[0], v[1], 0.0])  # Ensure v is always 3D
-    E = np.array([E[0], E[1], 0.0])  # Ensure E is always 3D
-    B = np.array([B[0], B[1], B[2]])  # Ensure B is 3D
-    return q * (E + np.cross(v, B))  # Now all terms are guaranteed 3D vectors
+    """Computes the relativistic Lorentz force."""
+    return q * (E + np.cross(v, B))
 
 def gamma_factor(v):
     """Computes the relativistic Lorentz factor."""
     speed = np.linalg.norm(v)
-    return 1 / np.sqrt(1 - (speed**2 / c**2)) if speed < c else 1e6  # Prevent infinity
+    return 1 / np.sqrt(1 - (speed**2 / c**2)) if speed < c else 1e6
 
-# Relativistic Runge-Kutta 4th Order Method
+# Adaptive RK4 Step
 def rk4_step(q, m, v, r, E, B, dt):
     def acceleration(v):
-        v = np.array([v[0], v[1], 0.0])  # Ensure velocity is always 3D
         gamma = gamma_factor(v)
         F = lorentz_force(q, v, E, B)
         v_dot_F = np.dot(v, F)
         return (F - (gamma**2 / c**2) * v_dot_F * v) / (gamma * m)
-    
-    v = np.array([v[0], v[1], 0.0])  # Ensure v is 3D at the start
     
     k1_v = dt * acceleration(v)
     k1_r = dt * v
@@ -69,36 +64,41 @@ def rk4_step(q, m, v, r, E, B, dt):
     v_new = v + (k1_v + 2*k2_v + 2*k3_v + k4_v) / 6
     r_new = r + (k1_r + 2*k2_r + 2*k3_r + k4_r) / 6
     
-    return np.array([v_new[0], v_new[1], 0.0]), r_new  # Always return 3D vector
+    return v_new, r_new
 
 # Convert E and B to 3D vectors
-E = np.array([E_field, 0, 0])  # Convert E to a 3D vector
-B = np.array([0, 0, B_field])  # Ensure B is also a 3D vector
+E = np.array([E_field, 0, 0])
+B = np.array([0, 0, B_field])
 
 # Placeholder for Data Download Button
 data_placeholder = st.empty()
 
-# Animation
+# Animation Setup
 fig, ax = plt.subplots(figsize=(6, 6))
 trajectory_plot, = ax.plot([], [], 'b-', label="Trajectory")
 ax.set_xlabel("x position (mm)")
 ax.set_ylabel("y position (mm)")
-ax.set_title("Charged Particle Motion (Relativistic)")
+ax.set_title("Charged Particle Motion")
 ax.legend()
-ax.set_xlim(-10, 10)
-ax.set_ylim(-10, 10)
+ax.set_xlim(-boundary * 1000, boundary * 1000)
+ax.set_ylim(-boundary * 1000, boundary * 1000)
 st_plot = st.pyplot(fig)
 
+# Simulation Loop
 for step in range(num_steps):
     velocity, position = rk4_step(charge, mass, velocity, position, E, B, dt)
-    velocity = np.array([velocity[0], velocity[1], 0.0])  # Ensure velocity is always 3D
     trajectory.append(position[:2].copy())
     time_array.append((step + 1) * dt)
     
-    if step % 10 == 0:
+    # Stop simulation if particle leaves boundary
+    if np.abs(position[0]) > boundary or np.abs(position[1]) > boundary:
+        break  # Stop simulation when particle exits
+    
+    # Adaptive resolution: Skip updates for fast animation speeds
+    if step % max(1, int(50 / animation_speed)) == 0:
         trajectory_np = np.array(trajectory)
         trajectory_plot.set_data(trajectory_np[:, 0] * 1000, trajectory_np[:, 1] * 1000)
-        st_plot.pyplot(fig)
+        st_plot.pyplot(fig, clear_figure=True)
         time.sleep(animation_speed / 1000.0)
 
 # Ensure data arrays are of equal length
@@ -111,7 +111,7 @@ data = pd.DataFrame({
     "Y Position (m)": np.array(trajectory)[:, 1]
 })
 
-# Display the download button in the placeholder so it's always functional
+# Display Download Button
 data_placeholder.download_button(
-    "Download Data", data.to_csv(index=False), "particle_motion.csv", "text/csv"
+    "Download Simulation Data", data.to_csv(index=False), "particle_motion.csv", "text/csv"
 )
