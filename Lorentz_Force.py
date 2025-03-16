@@ -26,7 +26,10 @@ st.title("Charged Particle in E & B Fields")
 
 # User Inputs
 E_field = st.number_input("Electric Field Strength (V/m)", value=0.0)
-B_field = st.number_input("Magnetic Field Strength (T)", value=0.1)
+# B_field = st.number_input("Magnetic Field Strength (T)", value=0.1)
+log_B_field = st.slider("Magnetic Field Strength (T)", -5, +1, -4)
+B_field = 10 **log_B_field
+
 velocity = st.number_input("Initial Velocity (m/s)", value=1e5)
 angle = st.number_input("Angle of Velocity (degrees)", value=0.0)
 
