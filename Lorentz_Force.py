@@ -75,6 +75,10 @@ def rk4_step(q, m, v, r, E, B, dt):
 E = np.array([E_field, 0, 0])  # Convert E to a 3D vector
 B = np.array([0, 0, B_field])  # Ensure B is also a 3D vector
 
+# Prepare the download button before the animation to ensure visibility
+st.write("## Download Simulation Data")
+data_placeholder = st.empty()
+
 # Animation
 fig, ax = plt.subplots(figsize=(6, 6))
 trajectory_plot, = ax.plot([], [], 'b-', label="Trajectory")
@@ -105,4 +109,5 @@ data = pd.DataFrame({
     "Y Position (m)": np.array(trajectory)[:len(time_array), 1]
 })
 
-st.download_button("Download Data", data.to_csv(index=False), "particle_motion.csv", "text/csv")
+# Display the download button in the placeholder so it's always visible
+data_placeholder.download_button("Download Data", data.to_csv(index=False), "particle_motion.csv", "text/csv")
