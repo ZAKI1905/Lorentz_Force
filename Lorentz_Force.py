@@ -107,17 +107,19 @@ if not st.session_state["reset"]:
         # Adaptive resolution: Skip updates for fast animation speeds
         if step % max(1, int(50 / animation_speed)) == 0:
             trajectory_np = np.array(st.session_state["trajectory"])
-            trajectory_plot.set_data(trajectory_np[:, 0] * 1000, trajectory_np[:, 1] * 1000)
+            if trajectory_np.shape[0] > 0:
+                trajectory_plot.set_data(trajectory_np[:, 0] * 1000, trajectory_np[:, 1] * 1000)
             st_plot.pyplot(fig, clear_figure=True)
             time.sleep(animation_speed / 1000.0)
 
-# Display Download Button
-data = pd.DataFrame({
-    "Time (s)": st.session_state["time_array"],
-    "X Position (m)": np.array(st.session_state["trajectory"])[:, 0],
-    "Y Position (m)": np.array(st.session_state["trajectory"])[:, 1]
-})
-
-st.download_button(
-    "Download Simulation Data", data.to_csv(index=False), "particle_motion.csv", "text/csv"
-)
+# Display Download Button if trajectory exists
+if len(st.session_state["trajectory"]) > 0:
+    trajectory_np = np.array(st.session_state["trajectory"])
+    data = pd.DataFrame({
+        "Time (s)": st.session_state["time_array"],
+        "X Position (m)": trajectory_np[:, 0],
+        "Y Position (m)": trajectory_np[:, 1]
+    })
+    st.download_button(
+        "Download Simulation Data", data.to_csv(index=False), "particle_motion.csv", "text/csv"
+    )
