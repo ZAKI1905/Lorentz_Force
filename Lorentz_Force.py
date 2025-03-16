@@ -51,8 +51,11 @@ ax.legend()
 st.pyplot(fig)
 
 # Data export functionality
+# Ensure the time array matches trajectory length
+time_array = np.linspace(0, num_steps * dt, len(trajectory))
+
 data = pd.DataFrame({
-    "Time (s)": np.arange(0, num_steps * dt, dt),
+    "Time (s)": time_array,
     "X Position (m)": trajectory[:, 0],
     "Y Position (m)": trajectory[:, 1]
 })
