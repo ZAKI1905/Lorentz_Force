@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 
 # Constants
 q = 1.6e-19  # Charge of the particle (Coulombs)
-m = 9.11e-31  # Mass of the particle (kg)
+# m = 9.11e-31  # Mass of the particle (kg)
+m = 10e-6  # Mass of the particle (kg)
 
 # Function to compute analytical solution
 def analytical_solution(E, B, v0, theta, t):
