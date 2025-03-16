@@ -11,7 +11,7 @@ c = 3e8  # Speed of light in m/s
 
 # Streamlit UI
 st.title("Charged Particle Motion in Electric and Magnetic Fields")
-st.write("""
+st.write(r"""
 This simulation visualizes the motion of a charged particle under the influence of an electric field \(E\) and a magnetic field \(B\) perpendicular to the plane.
 Adjust the parameters and observe the trajectory!
 """)
@@ -28,8 +28,8 @@ animation_speed = st.slider("Animation Speed (ms per frame)", 1, 100, 20)
 # Initial conditions
 position = np.array([0.0, 0.0, 0.0])
 velocity = np.array([velocity_x, velocity_y, 0.0])
-trajectory = [position[:2].copy()]
-time_array = [0.0]
+trajectory = []
+time_array = []
 
 def lorentz_force(q, v, E, B):
     """Computes the relativistic Lorentz force with correct vector shapes."""
@@ -98,11 +98,11 @@ for step in range(num_steps):
         st_plot.pyplot(fig)
         time.sleep(animation_speed / 1000.0)
 
-# Data export functionality
+# Ensure data arrays are of equal length
 data = pd.DataFrame({
-    "Time (s)": time_array,
-    "X Position (m)": trajectory_np[:, 0],
-    "Y Position (m)": trajectory_np[:, 1]
+    "Time (s)": time_array[:len(trajectory)],
+    "X Position (m)": np.array(trajectory)[:len(time_array), 0],
+    "Y Position (m)": np.array(trajectory)[:len(time_array), 1]
 })
 
 st.download_button("Download Data", data.to_csv(index=False), "particle_motion.csv", "text/csv")
