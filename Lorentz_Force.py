@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import time
 
 # Constants
 dt = 1e-10  # Smaller time step to improve stability
@@ -22,6 +23,7 @@ velocity_x = st.slider("Initial Velocity in x (m/s, x10⁶)", -50.0, 50.0, 10.0)
 velocity_y = st.slider("Initial Velocity in y (m/s, x10⁶)", -50.0, 50.0, 0.0) * 1e6
 B_field = st.slider("Magnetic Field Strength (T)", -5.0, 5.0, -2.9)
 E_field = st.slider("Electric Field Strength (V/m, x10⁵)", -10.0, 10.0, 0.0) * 1e5
+animation_speed = st.slider("Animation Speed (ms per frame)", 1, 100, 20)
 
 # Initial conditions
 position = np.array([0.0, 0.0, 0.0])
@@ -73,29 +75,34 @@ def rk4_step(q, m, v, r, E, B, dt):
 E = np.array([E_field, 0, 0])  # Convert E to a 3D vector
 B = np.array([0, 0, B_field])  # Ensure B is also a 3D vector
 
-# Run simulation
+# Animation
+fig, ax = plt.subplots(figsize=(6, 6))
+trajectory_plot, = ax.plot([], [], 'b-', label="Trajectory")
+ax.set_xlabel("x position (mm)")
+ax.set_ylabel("y position (mm)")
+ax.set_title("Charged Particle Motion (Relativistic)")
+ax.legend()
+ax.set_xlim(-10, 10)
+ax.set_ylim(-10, 10)
+st_plot = st.pyplot(fig)
+
 for step in range(num_steps):
     velocity, position = rk4_step(charge, mass, velocity, position, E, B, dt)
     velocity = np.array([velocity[0], velocity[1], 0.0])  # Ensure velocity is always 3D
     trajectory.append(position[:2].copy())
     time_array.append((step + 1) * dt)
-
-trajectory = np.array(trajectory)
-
-# Plotting
-fig, ax = plt.subplots(figsize=(6, 6))
-ax.plot(trajectory[:, 0] * 1000, trajectory[:, 1] * 1000, 'b-', label="Trajectory")
-ax.set_xlabel("x position (mm)")
-ax.set_ylabel("y position (mm)")
-ax.set_title("Charged Particle Motion (Relativistic)")
-ax.legend()
-st.pyplot(fig)
+    
+    if step % 10 == 0:
+        trajectory_np = np.array(trajectory)
+        trajectory_plot.set_data(trajectory_np[:, 0] * 1000, trajectory_np[:, 1] * 1000)
+        st_plot.pyplot(fig)
+        time.sleep(animation_speed / 1000.0)
 
 # Data export functionality
 data = pd.DataFrame({
     "Time (s)": time_array,
-    "X Position (m)": trajectory[:, 0],
-    "Y Position (m)": trajectory[:, 1]
+    "X Position (m)": trajectory_np[:, 0],
+    "Y Position (m)": trajectory_np[:, 1]
 })
 
 st.download_button("Download Data", data.to_csv(index=False), "particle_motion.csv", "text/csv")
