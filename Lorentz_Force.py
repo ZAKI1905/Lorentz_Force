@@ -30,9 +30,11 @@ trajectory = [position[:2].copy()]
 time_array = [0.0]
 
 def lorentz_force(q, v, E, B):
-    """Computes the relativistic Lorentz force, ensuring 3D vectors."""
+    """Computes the relativistic Lorentz force with correct vector shapes."""
     v = np.array([v[0], v[1], 0.0])  # Ensure v is always 3D
-    return q * (E + np.cross(v, np.array([0, 0, B])))
+    E = np.array([E[0], E[1], 0.0])  # Ensure E is always 3D
+    B = np.array([B[0], B[1], B[2]])  # Ensure B is 3D
+    return q * (E + np.cross(v, B))  # Now all terms are guaranteed 3D vectors
 
 def gamma_factor(v):
     """Computes the relativistic Lorentz factor."""
@@ -67,10 +69,13 @@ def rk4_step(q, m, v, r, E, B, dt):
     
     return np.array([v_new[0], v_new[1], 0.0]), r_new  # Always return 3D vector
 
+# Convert E and B to 3D vectors
+E = np.array([E_field, 0, 0])  # Convert E to a 3D vector
+B = np.array([0, 0, B_field])  # Ensure B is also a 3D vector
+
 # Run simulation
 for step in range(num_steps):
-    velocity, position = rk4_step(charge, mass, velocity, position, 
-                                  np.array([E_field, 0, 0]), np.array([0, 0, B_field]), dt)
+    velocity, position = rk4_step(charge, mass, velocity, position, E, B, dt)
     velocity = np.array([velocity[0], velocity[1], 0.0])  # Ensure velocity is always 3D
     trajectory.append(position[:2].copy())
     time_array.append((step + 1) * dt)
