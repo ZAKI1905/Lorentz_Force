@@ -29,8 +29,9 @@ B_field = st.number_input("Magnetic Field Strength (T)", value=0.1)
 velocity = st.number_input("Initial Velocity (m/s)", value=1e5)
 angle = st.number_input("Angle of Velocity (degrees)", value=0.0)
 
-# Logarithmic slider for simulation time (nano to milliseconds)
-time_max = st.slider("Simulation Duration", min_value=1e-9, max_value=1e-3, value=1e-6, format="%.0e")
+# Logarithmic slider for simulation time
+log_time = st.slider("Simulation Duration (ns to ms)", -9, -3, -6)
+time_max = 10 ** log_time  # Convert log scale to actual time in seconds
 
 # Convert angle to radians
 theta = np.radians(angle)
