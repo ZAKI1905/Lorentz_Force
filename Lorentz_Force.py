@@ -1,11 +1,11 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 # Constants
 q = 1.6e-19  # Charge of the particle (Coulombs)
-# m = 9.11e-31  # Mass of the particle (kg)
-m = 10e-6  # Mass of the particle (kg)
+m = 9.11e-31  # Mass of the particle (kg)
 
 # Function to compute analytical solution
 def analytical_solution(E, B, v0, theta, t):
@@ -16,8 +16,8 @@ def analytical_solution(E, B, v0, theta, t):
         y_t = vt[1] * t
     else:  # Magnetic field present
         omega = q * B / m  # Cyclotron frequency
-        x_t = (vt[0] / omega) * np.sin(omega * t) + (E / B) * t
-        y_t = (vt[1] / omega) * (1 - np.cos(omega * t))
+        x_t = (vt[0] / omega) * np.sin(omega * t) + (E / B) * (1 - np.cos(omega * t))
+        y_t = (vt[1] / omega) * (1 - np.cos(omega * t)) + (E / B) * t
     
     return x_t, y_t
 
@@ -31,7 +31,7 @@ velocity = st.number_input("Initial Velocity (m/s)", value=1e5)
 angle = st.number_input("Angle of Velocity (degrees)", value=0.0)
 
 # Logarithmic slider for simulation time
-log_time = st.slider("Simulation Duration (mus to s)", -6, 0, -3)
+log_time = st.slider("Simulation Duration (ns to ms)", -9, -3, -6)
 time_max = 10 ** log_time  # Convert log scale to actual time in seconds
 
 # Convert angle to radians
@@ -41,6 +41,20 @@ theta = np.radians(angle)
 if st.button("Update Plot"):
     t_vals = np.linspace(0, time_max, 1000)
     x_vals, y_vals = analytical_solution(E_field, B_field, velocity, theta, t_vals)
+    
+    # Save trajectory to CSV
+    trajectory_data = pd.DataFrame({
+        "Time (s)": t_vals,
+        "X Position (m)": x_vals,
+        "Y Position (m)": y_vals
+    })
+    trajectory_csv = trajectory_data.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download Trajectory Data",
+        data=trajectory_csv,
+        file_name="trajectory_data.csv",
+        mime="text/csv"
+    )
     
     # Plot results
     fig, ax = plt.subplots()
