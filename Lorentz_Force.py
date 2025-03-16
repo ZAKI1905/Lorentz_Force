@@ -31,7 +31,7 @@ time_array = [0.0]
 
 def lorentz_force(q, v, E, B):
     """Computes the relativistic Lorentz force, ensuring 3D vectors."""
-    v = np.array([v[0], v[1], 0.0])  # Ensure v is a 3D vector
+    v = np.array([v[0], v[1], 0.0])  # Ensure v is always 3D
     return q * (E + np.cross(v, np.array([0, 0, B])))
 
 def gamma_factor(v):
@@ -65,11 +65,13 @@ def rk4_step(q, m, v, r, E, B, dt):
     v_new = v + (k1_v + 2*k2_v + 2*k3_v + k4_v) / 6
     r_new = r + (k1_r + 2*k2_r + 2*k3_r + k4_r) / 6
     
-    return np.array([v_new[0], v_new[1], 0.0]), r_new  # Always return 3D velocity
+    return np.array([v_new[0], v_new[1], 0.0]), r_new  # Always return 3D vector
 
 # Run simulation
 for step in range(num_steps):
-    velocity, position = rk4_step(charge, mass, velocity, position, np.array([E_field, 0, 0]), np.array([0, 0, B_field]), dt)
+    velocity, position = rk4_step(charge, mass, velocity, position, 
+                                  np.array([E_field, 0, 0]), np.array([0, 0, B_field]), dt)
+    velocity = np.array([velocity[0], velocity[1], 0.0])  # Ensure velocity is always 3D
     trajectory.append(position[:2].copy())
     time_array.append((step + 1) * dt)
 
