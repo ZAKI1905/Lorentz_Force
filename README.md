@@ -56,10 +56,10 @@ The particle's motion is governed by the **Lorentz force**:
 \[ \mathbf{F} = q(\mathbf{E} + \mathbf{v} \times \mathbf{B}) \]
 
 where:
-- \( q \) is the charge of the particle,
-- \( \mathbf{E} \) is the electric field,
-- \( \mathbf{B} \) is the magnetic field,
-- \( \mathbf{v} \) is the velocity of the particle.
+- `q` is the charge of the particle,
+- `E` is the electric field,
+- `B` is the magnetic field,
+- `v` is the velocity of the particle.
 
 ### Future Improvements
 - **Animated trajectory visualization**
