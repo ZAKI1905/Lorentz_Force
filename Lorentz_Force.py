@@ -10,7 +10,6 @@ m_e = 9.11e-31  # Mass of the particle (kg)
 import numpy as np
 
 def analytical_solution(E, B, v0, theta, t, q, m):
-    theta = np.radians(theta_degrees)  # Convert degrees to radians
     vt = v0 * np.array([np.cos(theta), np.sin(theta)])
     
     if B == 0:  # Pure electric field motion (linear acceleration)
