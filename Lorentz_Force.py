@@ -77,8 +77,10 @@ st.title("Charged Particle in E & B Fields")
 log_E_field = st.slider("Electric Field Strength (V/m)", -3, +3, 0)
 E_field = 10 ** log_E_field
 
-log_B_field = st.slider("Magnetic Field Strength (T)", -5, +1, -4)
-B_field = 10 ** log_B_field
+# log_B_field = st.slider("Magnetic Field Strength (T)", -5, +1, -4)
+# B_field = 10 ** log_B_field
+
+B_field = st.slider("Magnetic Field Strength (T)", -10, +10, +1)
 
 # velocity = st.number_input("Initial Velocity (m/s)", value=1e5)
 velocity_e6 = st.slider("Initial Velocity (1e+6 m/s)", 1, 10, 5)
