@@ -7,19 +7,35 @@ import pandas as pd
 q = 1.6e-19  # Charge of the particle (Coulombs)
 m = 9.11e-31  # Mass of the particle (kg)
 
-# Function to compute analytical solution
-def analytical_solution(E, B, v0, theta, t):
+import numpy as np
+
+def analytical_solution(E, B, v0, theta, t, q, m):
     vt = v0 * np.array([np.cos(theta), np.sin(theta)])
     
     if B == 0:  # Pure electric field motion (linear acceleration)
         x_t = vt[0] * t + 0.5 * (q * E / m) * t**2
         y_t = vt[1] * t
+
+        vx_t = vt[0] + (q * E / m) * t  # Increasing velocity in x due to E-field
+        vy_t = vt[1]  # Constant velocity in y
+
+        ax_t = (q * E / m)  # Constant acceleration in x
+        ay_t = 0  # No acceleration in y
+
     else:  # Magnetic field present
         omega = q * B / m  # Cyclotron frequency
-        x_t = (vt[0] / omega) * np.sin(omega * t) + (E / B) * (1 - np.cos(omega * t))
-        y_t = (vt[1] / omega) * (1 - np.cos(omega * t)) + (E / B) * t
-    
-    return x_t, y_t
+        v_d = E / B  # Drift velocity in x
+
+        x_t = (vt[1] / omega) * (1 - np.cos(omega * t)) + v_d * t
+        y_t = (vt[1] / omega) * np.sin(omega * t) - (vt[0] / omega) * (1 - np.cos(omega * t))
+
+        vx_t = v_d + vt[0] * np.cos(omega * t) - vt[1] * np.sin(omega * t)
+        vy_t = vt[1] * np.cos(omega * t) + vt[0] * np.sin(omega * t)
+
+        ax_t = (q * E / m) - omega * vy_t  # Lorentz force in x
+        ay_t = omega * vx_t  # Lorentz force in y
+
+    return x_t, y_t, vx_t, vy_t, ax_t, ay_t
 
 # Streamlit UI
 st.title("Charged Particle in E & B Fields")
@@ -46,13 +62,17 @@ theta = np.radians(angle)
 # Button to update plot
 if st.button("Update Plot"):
     t_vals = np.linspace(0, time_max, 1000)
-    x_vals, y_vals = analytical_solution(E_field, B_field, velocity, theta, t_vals)
+    x_vals, y_vals, vx_vals, vy_vals, ax_vals, ay_vals = analytical_solution(E_field, B_field, velocity, theta, t_vals)
     
     # Save trajectory to CSV
     trajectory_data = pd.DataFrame({
         "Time (s)": t_vals,
         "X Position (m)": x_vals,
-        "Y Position (m)": y_vals
+        "Y Position (m)": y_vals,
+        "V_X Position (m/s)": vx_vals,
+        "V_Y Position (m/s)": vy_vals,
+        "a_X Position (m/s^2)": ax_vals,
+        "a_Y Position (m/s^2)": ay_vals
     })
     trajectory_csv = trajectory_data.to_csv(index=False).encode('utf-8')
     st.download_button(
