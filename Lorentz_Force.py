@@ -80,7 +80,10 @@ E_field = 10 ** log_E_field
 log_B_field = st.slider("Magnetic Field Strength (T)", -5, +1, -4)
 B_field = 10 ** log_B_field
 
-velocity = st.number_input("Initial Velocity (m/s)", value=1e5)
+# velocity = st.number_input("Initial Velocity (m/s)", value=1e5)
+velocity_e6 = st.slider("Initial Velocity (1e+6 m/s)", 1, 10, 5)
+velocity = velocity_e6 * 1e+6
+
 angle = st.number_input("Angle of Velocity (degrees)", value=0.0)
 
 # Logarithmic slider for simulation time
