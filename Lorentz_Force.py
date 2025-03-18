@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Constants
-q = 1.6e-19  # Charge of the particle (Coulombs)
-m = 9.11e-31  # Mass of the particle (kg)
+q_e = 1.6e-19  # Charge of the particle (Coulombs)
+m_e = 9.11e-31  # Mass of the particle (kg)
 
 import numpy as np
 
@@ -62,7 +62,7 @@ theta = np.radians(angle)
 # Button to update plot
 if st.button("Update Plot"):
     t_vals = np.linspace(0, time_max, 1000)
-    x_vals, y_vals, vx_vals, vy_vals, ax_vals, ay_vals = analytical_solution(E_field, B_field, velocity, theta, t_vals)
+    x_vals, y_vals, vx_vals, vy_vals, ax_vals, ay_vals = analytical_solution(E_field, B_field, velocity, theta, t_vals, q_e, m_e)
     
     # Save trajectory to CSV
     trajectory_data = pd.DataFrame({
