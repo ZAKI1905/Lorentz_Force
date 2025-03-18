@@ -59,6 +59,14 @@ time_max = 10 ** log_time  # Convert log scale to actual time in seconds
 # Convert angle to radians
 theta = np.radians(angle)
 
+print(f"Input Parameters:")
+print(f"Velocity (v0): {v0} m/s")
+print(f"Angle (theta): {theta} degrees")
+print(f"Charge (q): {q} C")
+print(f"Mass (m): {m} kg")
+print(f"Electric Field (E): {E} V/m")
+print(f"Magnetic Field (B): {B} T")
+
 # Button to update plot
 if st.button("Update Plot"):
     t_vals = np.linspace(0, time_max, 1000)
@@ -67,12 +75,12 @@ if st.button("Update Plot"):
     # Save trajectory to CSV
     trajectory_data = pd.DataFrame({
         "Time (s)": t_vals,
-        "X Position (m)": x_vals,
-        "Y Position (m)": y_vals,
+        "X (m)": x_vals,
+        "Y (m)": y_vals,
         "V_X (m/s)": vx_vals,
         "V_Y (m/s)": vy_vals,
-        "a_X Position (m/s^2)": ax_vals,
-        "a_Y Position (m/s^2)": ay_vals
+        "a_X (m/s^2)": ax_vals,
+        "a_Y (m/s^2)": ay_vals
     })
     trajectory_csv = trajectory_data.to_csv(index=False).encode('utf-8')
     st.download_button(
