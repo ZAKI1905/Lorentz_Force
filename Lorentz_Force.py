@@ -10,6 +10,7 @@ m_e = 9.11e-31  # Mass of the particle (kg)
 import numpy as np
 
 def analytical_solution(E, B, v0, theta, t, q, m):
+    theta = np.radians(theta_degrees)  # Convert degrees to radians
     vt = v0 * np.array([np.cos(theta), np.sin(theta)])
     
     if B == 0:  # Pure electric field motion (linear acceleration)
@@ -69,8 +70,8 @@ if st.button("Update Plot"):
         "Time (s)": t_vals,
         "X Position (m)": x_vals,
         "Y Position (m)": y_vals,
-        "V_X Position (m/s)": vx_vals,
-        "V_Y Position (m/s)": vy_vals,
+        "V_X (m/s)": vx_vals,
+        "V_Y (m/s)": vy_vals,
         "a_X Position (m/s^2)": ax_vals,
         "a_Y Position (m/s^2)": ay_vals
     })
