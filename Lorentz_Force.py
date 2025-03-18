@@ -5,7 +5,8 @@ import pandas as pd
 
 # Constants
 q_e = 1.6e-19  # Charge of the particle (Coulombs)
-m_e = 9.11e-31  # Mass of the particle (kg)
+# m_e = 9.11e-31  # Mass of the particle (kg)
+m_e =3.8175458e-26 # Na+ ion
 
 def export_trajectory(trajectory, velocity, angle, q_e, m_e, E_field, B_field):
     """
