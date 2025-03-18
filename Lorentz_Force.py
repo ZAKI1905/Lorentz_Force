@@ -74,8 +74,10 @@ def analytical_solution(E, B, v0, theta, t, q, m):
 st.title("Charged Particle in E & B Fields")
 
 # User Inputs
-log_E_field = st.slider("Electric Field Strength (V/m)", -3, +3, 0)
-E_field = 10 ** log_E_field
+# log_E_field = st.slider("Electric Field Strength (V/m)", -3, +3, 0)
+# E_field = 10 ** log_E_field
+
+E_field = st.slider("Electric Field Strength (V/m)", 0, 100, 0)
 
 # log_B_field = st.slider("Magnetic Field Strength (T)", -5, +1, -4)
 # B_field = 10 ** log_B_field
