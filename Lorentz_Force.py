@@ -60,12 +60,12 @@ time_max = 10 ** log_time  # Convert log scale to actual time in seconds
 theta = np.radians(angle)
 
 print(f"Input Parameters:")
-print(f"Velocity (v0): {v0} m/s")
-print(f"Angle (theta): {theta} degrees")
-print(f"Charge (q): {q} C")
-print(f"Mass (m): {m} kg")
-print(f"Electric Field (E): {E} V/m")
-print(f"Magnetic Field (B): {B} T")
+print(f"Velocity (v0): {velocity} m/s")
+print(f"Angle (theta): {angle} degrees")
+print(f"Charge (q): {q_e} C")
+print(f"Mass (m): {m_e} kg")
+print(f"Electric Field (E): {E_field} V/m")
+print(f"Magnetic Field (B): {B_field} T")
 
 # Button to update plot
 if st.button("Update Plot"):
