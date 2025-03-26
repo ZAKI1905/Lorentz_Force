@@ -56,9 +56,12 @@ def show_profile_setup():
     # Let the user choose an avatar style
     styles = ["bottts", "adventurer", "adventurer-neutral", "avataaars", "initials", "identicon", "micah"]
     style_choice = st.selectbox("Select Avatar Style", options=styles, index=0)
+
+    seeds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    seed_choice =  st.selectbox("Select Avatar", options=seeds, index=0)
     
     # Generate the DiceBear avatar URL using the badge as the seed
-    avatar_url = get_dicebear_avatar_url(badge, style=style_choice)
+    avatar_url = get_dicebear_avatar_url(seed_choice, style=style_choice)
     st.image(avatar_url, caption="Your Avatar", width=200)
     
     # Optionally, allow the user to choose a nickname (defaults to "User <badge>")
