@@ -60,7 +60,7 @@ def show_profile_setup():
     # seeds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     # seed_choice =  st.selectbox("Select Avatar", options=seeds, index=0)
     
-    seed_choice = st.slider("Select Avatar", 1, 20, 1)
+    seed_choice = st.slider("Select Avatar", 1, 30, 1)
     
     # Generate the DiceBear avatar URL using the badge as the seed
     avatar_url = get_dicebear_avatar_url(seed_choice, style=style_choice)
