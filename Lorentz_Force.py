@@ -59,7 +59,7 @@ def show_profile_setup():
     
     # Generate the DiceBear avatar URL using the badge as the seed
     avatar_url = get_dicebear_avatar_url(badge, style=style_choice)
-    st.image(avatar_url, caption="Your DiceBear Avatar", width=200)
+    st.image("https://api.dicebear.com/9.x/pixel-art/svg", caption="Your Avatar", width=200)
     
     # Optionally, allow the user to choose a nickname (defaults to "User <badge>")
     nickname = st.text_input("Choose a nickname (optional)", value=f"User {badge}")
