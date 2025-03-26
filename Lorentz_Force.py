@@ -96,6 +96,8 @@ def show_profile_setup():
         badges_df.loc[badges_df["badge"].astype(str) == badge, "avatar_seed"] = seed_choice
         badges_df.loc[badges_df["badge"].astype(str) == badge, "nickname"] = nickname
         save_badge_data(badges_df)
+        st.cache_data.clear()  # Clear the cache so load_badge_data returns fresh data
+        # save_badge_data(badges_df)
         
         # Update session state
         st.session_state["avatar_style"] = style_choice
