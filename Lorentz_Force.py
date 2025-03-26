@@ -22,7 +22,7 @@ def get_dicebear_avatar_url(seed, style="bottts"):
     Returns:
       A URL string pointing to the generated avatar image.
     """
-    return f"https://avatars.dicebear.com/api/{style}/{seed}.svg"
+    return f"https://api.dicebear.com/6.x/<style>/svg?seed=<seed>"
 
 def show_sign_in():
     st.header("Sign In")
