@@ -1,59 +1,59 @@
-# cosmic_ray_defense.py
+# cosmic_ray_defense_app.py
 
 import streamlit as st
-import numpy as np
-import matplotlib.pyplot as plt
 
-# --- Page Configuration ---
-st.set_page_config(page_title="Cosmic Ray Defense", layout="wide")
+def show_sign_in():
+    st.header("Sign In")
+    st.write("Enter your badge number to log in:")
+    badge = st.text_input("Badge Number")
+    if st.button("Submit"):
+        st.success("Logged in successfully! (Placeholder)")
+        st.session_state.page = "Mission Intro"
 
-# --- Title and Description ---
-st.title("🌌 Cosmic Ray Defense Simulator")
-st.markdown("""
-Model the trajectory of charged cosmic rays entering a planetary magnetic field.
-Use your knowledge of the Lorentz force and magnetic deflection to protect your base!
-""")
+def show_mission_intro():
+    st.header("Mission Introduction")
+    st.write("Welcome to the Cosmic Ray Defense mission!")
+    st.write("Narrative: Your goal is to protect a planet by mapping its magnetosphere.")
+    nickname = st.text_input("Choose your nickname")
+    planet_choice = st.selectbox("Choose a planet to work on", ["Mercury", "Earth", "Jupiter"])  # Example choices
+    st.write("Placeholder: Displaying information about the selected planet.")
+    if st.button("Start Spaceship Experiment"):
+        st.session_state.page = "Spaceship Experiment"
 
-# --- Sidebar Inputs ---
-st.sidebar.header("⚙️ Simulation Settings")
+def show_spaceship_experiment():
+    st.header("Spaceship Experiment")
+    st.write("Placeholder: Set up your experiments by firing cosmic rays and measuring trajectories.")
+    st.write("Placeholder: Insert diagrams, controls, and results here.")
+    if st.button("Proceed to Drone Deployment"):
+        st.session_state.page = "Drone Deployment"
 
-charge = st.sidebar.selectbox("Particle Charge (q)", [-1, 1], index=0)
-mass = st.sidebar.slider("Particle Mass (kg)", 1e-27, 1e-24, value=1.67e-27)
-velocity_mag = st.sidebar.slider("Initial Speed (m/s)", 1e5, 1e7, step=1e5, value=1e6)
-angle_deg = st.sidebar.slider("Entry Angle (deg)", 0, 90, 45)
-B_mag = st.sidebar.slider("Magnetic Field Strength (T)", 0.0, 5.0, 1.0)
+def show_drone_deployment():
+    st.header("Drone Deployment")
+    st.write("Placeholder: Deploy the drone to measure the surface magnetic field using a current loop.")
+    st.write("Placeholder: Display results and additional mission details.")
+    if st.button("Finish Mission"):
+        st.write("Mission Completed. (Placeholder: Display summary and feedback)")
 
-# --- Calculate Initial Conditions ---
-angle_rad = np.radians(angle_deg)
-v0 = np.array([velocity_mag * np.cos(angle_rad), velocity_mag * np.sin(angle_rad), 0])
-q = charge * 1.6e-19
+def main():
+    # Initialize session state for page navigation if not already set
+    if 'page' not in st.session_state:
+        st.session_state.page = "Sign In"
+    
+    # Sidebar Navigation
+    st.sidebar.title("Navigation")
+    page_options = ["Sign In", "Mission Intro", "Spaceship Experiment", "Drone Deployment"]
+    selected_page = st.sidebar.radio("Go to", page_options, index=page_options.index(st.session_state.page))
+    st.session_state.page = selected_page
 
-# --- Magnetic Field (Constant in this version) ---
-B = np.array([0, 0, B_mag])
+    # Render the selected page
+    if st.session_state.page == "Sign In":
+        show_sign_in()
+    elif st.session_state.page == "Mission Intro":
+        show_mission_intro()
+    elif st.session_state.page == "Spaceship Experiment":
+        show_spaceship_experiment()
+    elif st.session_state.page == "Drone Deployment":
+        show_drone_deployment()
 
-# --- Particle Trajectory Function ---
-def simulate_trajectory(q, m, v0, B, dt=1e-9, steps=2000):
-    r = np.zeros((steps, 3))
-    v = v0.copy()
-    for i in range(1, steps):
-        F = q * np.cross(v, B)
-        a = F / m
-        v += a * dt
-        r[i] = r[i-1] + v * dt
-    return r
-
-# --- Run Simulation ---
-trajectory = simulate_trajectory(q, mass, v0, B)
-
-# --- Plotting ---
-fig, ax = plt.subplots()
-ax.plot(trajectory[:,0], trajectory[:,1])
-ax.set_xlabel("x (m)")
-ax.set_ylabel("y (m)")
-ax.set_title("Charged Particle Trajectory")
-ax.grid(True)
-st.pyplot(fig)
-
-# --- Footer ---
-st.markdown("---")
-st.markdown("**Professor Zakeri – PHY 132 – Eastern Kentucky University** | m.zakeri@eku.edu")
+if __name__ == "__main__":
+    main()
