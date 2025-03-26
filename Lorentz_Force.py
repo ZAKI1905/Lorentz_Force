@@ -43,7 +43,7 @@ def show_sign_in():
 
 def show_profile_setup():
     st.header("Profile Setup")
-    st.write("Select your avatar using DiceBear. Your profile is identified solely by your badge number.")
+    st.write("Select your avatar.")
     
     # Retrieve the badge from session state
     badge = st.session_state.get("badge", "")
@@ -51,14 +51,16 @@ def show_profile_setup():
         st.error("No badge number found. Please sign in first.")
         return
 
-    st.write("Your unique avatar is generated based on your badge number. Choose your preferred avatar style below:")
+    st.write("Choose your preferred avatar style below:")
     
     # Let the user choose an avatar style
     styles = ["bottts", "adventurer", "adventurer-neutral", "avataaars", "initials", "identicon", "micah"]
     style_choice = st.selectbox("Select Avatar Style", options=styles, index=0)
 
-    seeds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    seed_choice =  st.selectbox("Select Avatar", options=seeds, index=0)
+    # seeds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    # seed_choice =  st.selectbox("Select Avatar", options=seeds, index=0)
+    
+    seed_choice = st.slider("Select Avatar", 1, 20, 1)
     
     # Generate the DiceBear avatar URL using the badge as the seed
     avatar_url = get_dicebear_avatar_url(seed_choice, style=style_choice)
