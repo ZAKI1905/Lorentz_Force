@@ -23,7 +23,7 @@ def get_dicebear_avatar_url(seed, style="bottts"):
       A URL string pointing to the generated avatar image.
     """
     # return f"https://api.dicebear.com/6.x/<style>/svg?seed=<seed>"
-    return f"https://api.dicebear.com/9.x/style/svg"
+    return "https://api.dicebear.com/9.x/pixel-art/svg"
 
 def show_sign_in():
     st.header("Sign In")
@@ -59,7 +59,7 @@ def show_profile_setup():
     
     # Generate the DiceBear avatar URL using the badge as the seed
     avatar_url = get_dicebear_avatar_url(badge, style=style_choice)
-    st.image("https://api.dicebear.com/9.x/pixel-art/svg", caption="Your Avatar", width=200)
+    st.image(avatar_url, caption="Your Avatar", width=200)
     
     # Optionally, allow the user to choose a nickname (defaults to "User <badge>")
     nickname = st.text_input("Choose a nickname (optional)", value=f"User {badge}")
